@@ -1,0 +1,55 @@
+  <html>
+  <head>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+         google.load("visualization", "1", {packages:["corechart"]});
+       function initialize() {
+          var opts = {sendMethod: 'auto'};
+          // Replace the data source URL on next line with your data source URL.
+          var query = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1Y2cAqWo3iDFaWDLmpN7yxa_A3mez7si6BnR3k_cno1Q/edit#gid=139330344&vpid=A1', opts);         
+        
+        // Optional request to return only column C and the sum of column B, grouped by C members.
+           query.setQuery('select A, B, C');
+
+        // Send the query with a callback function.
+         query.send(handleQueryResponse);
+      }
+      function handleQueryResponse(response) {
+       if (response.isError()) {
+         alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+         return;
+      }
+
+      var data = response.getDataTable();
+      var options = {
+        title: 'OMDD Latency Chart',
+        width: 1500,
+        height: 500,
+        // Gives each series an axis that matches the vAxes number below.
+        series: {
+          0: {targetAxisIndex: 0},
+          1: {targetAxisIndex: 1}
+        },
+        vAxes: {
+          // Adds titles to each axis.
+          0: {title: 'message count'},
+          1: {title: 'average latency'}
+        },
+        hAxis: {
+          title: 'DCS receive time',  titleTextStyle: {color: 'black'}
+          
+        },
+        vAxis: {
+        }
+      };
+      var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+      chart.draw(data, options);
+    }
+
+    google.setOnLoadCallback(initialize);
+    </script>
+  </head>
+  <body>
+     <div id="chart_div"></div>
+  </body>
+</html>
